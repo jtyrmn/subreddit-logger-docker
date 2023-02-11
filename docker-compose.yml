@@ -1,0 +1,35 @@
+services:
+  core:
+    build: ./core
+    environment:
+      - ENV_PATH=/shared/.env
+      - SUBREDDITS_PATH=/shared/subreddits.json
+      - ACCESS_TOKEN_PATH=/shared/reddit_access_token_cache.json
+
+      - SUBREDDIT_LOGGER_DATABASE_LOCATION=database:50100
+    volumes:
+      - ./shared/:/shared/
+    links:
+      - database
+    depends_on:
+      - database
+  
+  database:
+    build: ./database
+    environment:
+      - ENV_PATH=/shared/.env
+      - SUBREDDIT_LOGGER_DATABASE_LOCATION=database:50100
+    volumes:
+      - ./shared/:/shared/
+  
+  portal:
+    build: ./portal
+    environment:
+      - SUBREDDIT_LOGGER_DATABASE_LOCATION=http://database:50100
+      - NUM_DISPLAY_LISTINGS=10
+      - ASPNETCORE_URLS=http://*:50101
+      - Logging__LogLevel__Microsoft=Warning
+    ports:
+      - 50101:50101
+    depends_on:
+      - database

@@ -13,3 +13,11 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# everything in shared folder is private
+shared/*
+# except example templates
+!shared/*.template
+
+# cached access token which may be placed in /shared/
+shared/reddit_access_token_cache.json
